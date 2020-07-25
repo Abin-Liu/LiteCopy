@@ -10,96 +10,59 @@ namespace LiteCopy
 {
 	class LiteCopyParser
 	{
-		public List<string> SrcFiles { get; private set; }
-		public List<string> DestFiles { get; private set; }
+		public List<string> SrcFiles { get; private set; } = new List<string>();
+		public List<string> DestFiles { get; private set; } = new List<string>();
 
-		Dictionary<string, bool> m_ignoredFolders = null;
-		Dictionary<string, bool> m_ignoredFiless = null;		
+		IgnoreManager m_im = null;
 		string m_destFolder = null;
-		int m_sourceFolderLen = 0;
 
-		public void Start(string sourceFolder, string destFolder, string ignoredItems)
+		public void Parse(List<string> sourceFolders, string destFolder, IgnoreManager im)
 		{
-			SrcFiles = new List<string>();
-			DestFiles = new List<string>();
 			m_destFolder = destFolder;
-			m_sourceFolderLen = sourceFolder.Length;
-			ParseIgnoredItems(ignoredItems);			
-			QueueItems(new DirectoryInfo(sourceFolder));
-		}
-
-		string GetDestPath(string fullPath)
-		{
-			return m_destFolder + fullPath.Substring(m_sourceFolderLen);
-		}
-
-		void QueueItems(DirectoryInfo dir)
-		{
-			foreach (FileInfo file in dir.GetFiles())
+			m_im = im;
+			Release();
+			foreach (string folder in sourceFolders)
 			{
-				string ext = file.Extension.ToLower();
-				if (m_ignoredFiless.ContainsKey(ext))
+				DirectoryInfo source = new DirectoryInfo(folder);
+				QueueItems(source, destFolder + "\\" + source.Name);
+			}
+		}
+
+		public void Release()
+		{
+			SrcFiles.Clear();
+			DestFiles.Clear();
+		}
+
+		string GetDestPath(int baseLength, string fullPath)
+		{
+			return m_destFolder + fullPath.Substring(baseLength);
+		}
+
+		void QueueItems(DirectoryInfo source, string dest)
+		{
+			foreach (FileInfo file in source.GetFiles())
+			{
+				if (m_im.IsExtIgnored(file.Extension))
 				{
 					continue;
 				}
 
 				SrcFiles.Add(file.FullName);
-				DestFiles.Add(GetDestPath(file.FullName));				
+				DestFiles.Add(dest + "\\" + file.Name);				
 			}
 
-			foreach (DirectoryInfo subdir in dir.GetDirectories())
+			foreach (DirectoryInfo sub in source.GetDirectories())
 			{
-				if (m_ignoredFolders.ContainsKey(subdir.Name.ToLower()))
+				if (m_im.IsFolderIgnored(sub.Name))
 				{
 					continue;
 				}
 
-				Directory.CreateDirectory(GetDestPath(subdir.FullName));
-				QueueItems(subdir);
+				string destSub = dest + "\\" + sub.Name;
+				Directory.CreateDirectory(destSub);
+				QueueItems(sub, destSub);
 			}
-		}
-
-		void ParseIgnoredItems(string ignoredItems)
-		{
-			m_ignoredFolders = new Dictionary<string, bool>();
-			m_ignoredFiless = new Dictionary<string, bool>();
-
-			string[] lines = ignoredItems.Split('\n');
-			foreach (string line in lines)
-			{
-				string item;
-				int pos = line.IndexOf('#');
-				if (pos == -1)
-				{
-					item = line;
-				}				
-				else
-				{
-					item = line.Substring(0, pos);
-				}
-
-				item = item.Trim();				
-				if (item == "")
-				{
-					continue;
-				}
-
-				try
-				{
-					char ch = item[item.Length - 1];
-					if (ch == '/' || ch == '\\')
-					{
-						m_ignoredFolders.Add(item.Substring(0, item.Length - 1).ToLower(), true);
-					}
-					else
-					{
-						m_ignoredFiless.Add(item.ToLower(), true);
-					}
-				}
-				catch
-				{
-				}				
-			}
-		}
+		}		
 	}
 }

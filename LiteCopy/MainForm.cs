@@ -16,10 +16,9 @@ namespace LiteCopy
 {
 	public partial class MainForm : Form
 	{
-		const string DefaultIgnores = ".vs/\r\nbin/\r\ndebug/\r\nrelease/\r\npackages/\r\nobj/\r\nnode_modules/\r\n#.git/\r\n#.gitattributes\r\n#.gitignore";
-		static readonly string IgnoresFile = AppDomain.CurrentDomain.BaseDirectory + "Ignores.txt";
-		string m_srcFolder;
-		string m_destFolder;
+		List<string> m_srcFolders = new List<string>();
+		string m_destFolder = null;
+		IgnoreManager m_im = new IgnoreManager();
 		LiteCopyParser m_lcp = new LiteCopyParser();
 
 		public MainForm()
@@ -29,50 +28,30 @@ namespace LiteCopy
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			try
-			{
-				txtIgnores.Text = File.ReadAllText(IgnoresFile);
-			}
-			catch
-			{
-				txtIgnores.Text = DefaultIgnores;
-			}
-
 			RegistryHelper reg = new RegistryHelper();
 			reg.Open("Abin", ProductName, false);
-			txtSrcFolder.Text = reg.ReadString("Source Folder");
 			txtDestFolder.Text = reg.ReadString("Destination Folder");
 			reg.Close();
-		}
 
-		private void btnBrowseSrc_Click(object sender, EventArgs e)
-		{
-			BrowseForFolder(txtSrcFolder);
-		}
+			m_im.Load();
+			m_im.Parse();
+		}		
 
 		private void btnBrowseDest_Click(object sender, EventArgs e)
 		{
-			BrowseForFolder(txtDestFolder);
-		}
-
-		private void BrowseForFolder(TextBox tb)
-		{
-			OpenFolderDialog dlg = new OpenFolderDialog();			
-			dlg.SelectedPath = tb.Text;
+			OpenFolderDialog dlg = new OpenFolderDialog();
+			dlg.SelectedPath = txtDestFolder.Text;
 			if (dlg.ShowDialog(this) == DialogResult.OK)
 			{
-				tb.Text = dlg.SelectedPath;
+				txtDestFolder.Text = dlg.SelectedPath;
 			}
-		}
+		}		
 
 		private void btnOK_Click(object sender, EventArgs e)
-		{
-			m_srcFolder = txtSrcFolder.Text.Trim();
-			if (m_srcFolder == "" || !Directory.Exists(m_srcFolder))
+		{			
+			if (m_srcFolders.Count == 0)
 			{
-				MessageForm.Error(this, "Invalid source folder.");
-				txtSrcFolder.Focus();
-				txtSrcFolder.SelectAll();
+				MessageForm.Error(this, "Please specify at least 1 source folder.");				
 				return;
 			}
 
@@ -87,48 +66,32 @@ namespace LiteCopy
 
 			RegistryHelper reg = new RegistryHelper();
 			reg.Open("Abin", ProductName, true);
-			reg.WriteString("Source Folder", txtSrcFolder.Text);
 			reg.WriteString("Destination Folder", txtDestFolder.Text);
 			reg.Close();
 
-			SaveIgnoresFile();
-
 			TaskForm form = new TaskForm();
-			form.Message = "Preparing for files...";
 			form.AllowAbort = false;
-			form.TaskProc = PrepareFiles;
+			form.TaskProc = TaskProc;
 
-			if (form.ShowDialog(this) != DialogResult.OK)
-			{
-				return;
-			}
-
-			int error = SHFileOperation.Copy(m_lcp.SrcFiles, m_lcp.DestFiles);
-			if (error == 0)
+			if (form.ShowDialog(this) == DialogResult.OK)
 			{
 				MessageForm.Info(this, "Copy completed successfully.");
 			}
 			else
 			{
-				MessageForm.Error(this, "Copy failed: " + SHFileOperation.GetErrorString(error));
-			}
-		}
+				MessageForm.Error(this, form.Error);
+			}			
+		}		
 
-		private void SaveIgnoresFile()
+		private void TaskProc()
 		{
-			try
+			m_lcp.Parse(m_srcFolders, m_destFolder, m_im);
+			int error = SHFileOperation.Copy(m_lcp.SrcFiles, m_lcp.DestFiles);
+			m_lcp.Release(); // 可能包含几十万条字符串，及早释放
+			if (error != 0)
 			{
-				File.WriteAllText(IgnoresFile, txtIgnores.Text);
+				throw new Exception("Copy failed: " + SHFileOperation.GetErrorString(error));
 			}
-			catch (Exception ex)
-			{
-				MessageForm.Warning(this, ex.Message);
-			}
-		}
-
-		private void PrepareFiles()
-		{
-			m_lcp.Start(m_srcFolder, m_destFolder, txtIgnores.Text);
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)
@@ -136,12 +99,117 @@ namespace LiteCopy
 			Close();
 		}
 
-		private void btnDefault_Click(object sender, EventArgs e)
+		private void btnIgnores_Click(object sender, EventArgs e)
 		{
-			if (MessageForm.Show(this, "Restore default ignored items, are you sure?", ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+			IgnoreForm form = new IgnoreForm();
+			form.IgnoredText = m_im.Text;
+			if (form.ShowDialog(this) != DialogResult.OK)
 			{
-				txtIgnores.Text = DefaultIgnores;
-				SaveIgnoresFile();
+				return;
+			}
+			
+			m_im.Text = form.IgnoredText;
+			m_im.Parse();
+
+			try
+			{
+				m_im.Save();
+			}
+			catch (Exception ex)
+			{
+				MessageForm.Warning(ex.Message);
+			}
+		}
+
+		private void listView1_DragEnter(object sender, DragEventArgs e)
+		{
+			if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				return;
+			}
+
+			Array array = e.Data.GetData(DataFormats.FileDrop) as Array;
+			if (array == null || array.Length < 1)
+			{
+				return;
+			}
+
+			if (Directory.Exists(array.GetValue(0).ToString()))
+			{
+				e.Effect = DragDropEffects.Link;
+			}
+		}
+
+		private void listView1_DragDrop(object sender, DragEventArgs e)
+		{
+			if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				return;
+			}
+
+			Array array = e.Data.GetData(DataFormats.FileDrop) as Array;
+			if (array == null || array.Length < 1)
+			{
+				return;
+			}
+
+			listView1.BeginUpdate();
+			for (int i = 0; i < array.Length; i++)
+			{
+				string folder = array.GetValue(i).ToString();
+				if (m_srcFolders.IndexOf(folder) == -1)
+				{
+					m_srcFolders.Add(folder);
+					listView1.Items.Add(folder, 0);
+				}				
+			}
+			listView1.EndUpdate();
+		}
+
+		private void deleteSelectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection si = listView1.SelectedIndices;
+			if (si.Count == 0)
+			{
+				return;
+			}
+
+			List<int> indices = new List<int>();
+			foreach (int index in si)
+			{
+				indices.Add(index);
+			}
+
+			indices.Reverse();
+
+			listView1.BeginUpdate();
+			foreach (int index in indices)
+			{
+				m_srcFolders.RemoveAt(index);
+				listView1.Items.RemoveAt(index);
+			}
+			listView1.EndUpdate();
+		}
+
+		private void clearAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			m_srcFolders.Clear();
+			listView1.Items.Clear();
+		}
+
+		private void addToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFolderDialog dlg = new OpenFolderDialog();			
+			if (dlg.ShowDialog(this) != DialogResult.OK)
+			{
+				return;
+			}
+
+			string folder = dlg.SelectedPath;
+			if (m_srcFolders.IndexOf(folder) == -1)
+			{
+				m_srcFolders.Add(folder);
+				listView1.Items.Add(folder, 0);
 			}
 		}
 	}

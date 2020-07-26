@@ -7,14 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-using ToolkitForms;
 
 namespace LiteCopy
 {
 	partial class IgnoreForm : Form
 	{
-		public string IgnoredText { get; set; }
+		public string IgnoredText { get; set; } = "";
 
 		public IgnoreForm()
 		{
@@ -31,8 +29,16 @@ namespace LiteCopy
 
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			IgnoredText = textBox1.Text.Trim();
-			DialogResult = DialogResult.OK;			
+			string text = textBox1.Text.Trim();
+			if (IgnoredText.Trim().Replace("\r\n", "") == text.Replace("\r\n", ""))
+			{
+				DialogResult = DialogResult.Cancel;
+			}
+			else
+			{
+				IgnoredText = text;
+				DialogResult = DialogResult.OK;
+			}						
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)

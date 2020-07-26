@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using MFGLib;
-using ToolkitForms;
 using Win32API;
 
 namespace LiteCopy
@@ -51,14 +50,14 @@ namespace LiteCopy
 		{			
 			if (m_srcFolders.Count == 0)
 			{
-				MessageForm.Error(this, "Please specify at least 1 source folder.");				
+				MessageBox.Show(this, "Please specify at least 1 source folder.", "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Error);				
 				return;
 			}
 
 			m_destFolder = txtDestFolder.Text.Trim();
 			if (m_destFolder == "" || !Directory.Exists(m_destFolder))
 			{
-				MessageForm.Error(this, "Invalid destination folder.");
+				MessageBox.Show(this, "Invalid destination folder.", "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				txtDestFolder.Focus();
 				txtDestFolder.SelectAll();
 				return;
@@ -70,16 +69,15 @@ namespace LiteCopy
 			reg.Close();
 
 			TaskForm form = new TaskForm();
-			form.AllowAbort = false;
 			form.TaskProc = TaskProc;
 
 			if (form.ShowDialog(this) == DialogResult.OK)
 			{
-				MessageForm.Info(this, "Copy completed successfully.");
+				MessageBox.Show(this, "Copy completed successfully.", "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			else
 			{
-				MessageForm.Error(this, form.Error);
+				MessageBox.Show(this, form.Error, "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}			
 		}		
 
@@ -117,7 +115,7 @@ namespace LiteCopy
 			}
 			catch (Exception ex)
 			{
-				MessageForm.Warning(ex.Message);
+				MessageBox.Show(ex.Message, "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
 

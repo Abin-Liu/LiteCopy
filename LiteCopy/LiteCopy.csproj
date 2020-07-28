@@ -49,13 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IgnoreForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IgnoreForm.Designer.cs">
-      <DependentUpon>IgnoreForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IgnoreManager.cs" />
+    <Compile Include="Ignores\IgnoreManager.cs" />
+    <Compile Include="Ignores\IgnoreBase.cs" />
+    <Compile Include="Ignores\IgnoreGit.cs" />
+    <Compile Include="Ignores\IgnoreNodeJS.cs" />
+    <Compile Include="Ignores\IgnoreVisualStudio.cs" />
     <Compile Include="Libs\RegistryHelper.cs" />
     <Compile Include="LiteCopyParser.cs" />
     <Compile Include="Libs\OpenFolderDialog.cs" />
@@ -74,9 +72,6 @@
     <Compile Include="TaskForm.Designer.cs">
       <DependentUpon>TaskForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="IgnoreForm.resx">
-      <DependentUpon>IgnoreForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -108,8 +103,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Images\Browse.png" />
     <Content Include="Images\Cancel.png" />
-    <None Include="Images\Default.png" />
-    <Content Include="Images\Cog.png" />
     <Content Include="Images\file.png" />
     <Content Include="Images\Folder_Small.png" />
     <Content Include="Images\OK.png" />

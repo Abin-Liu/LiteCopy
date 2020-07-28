@@ -30,10 +30,10 @@ namespace LiteCopy
 			RegistryHelper reg = new RegistryHelper();
 			reg.Open("Abin", ProductName, false);
 			txtDestFolder.Text = reg.ReadString("Destination Folder");
+			chkVisualStudio.Checked = reg.ReadBool("Ignore Visual Studio", true);
+			chkNodeJS.Checked = reg.ReadBool("Ignore Node JS", true);
+			chkGit.Checked = reg.ReadBool("Ignore Git");
 			reg.Close();
-
-			m_im.Load();
-			m_im.Parse();
 		}		
 
 		private void btnBrowseDest_Click(object sender, EventArgs e)
@@ -63,9 +63,14 @@ namespace LiteCopy
 				return;
 			}
 
+			m_im.Create(chkVisualStudio.Checked, chkNodeJS.Checked, chkGit.Checked);
+
 			RegistryHelper reg = new RegistryHelper();
 			reg.Open("Abin", ProductName, true);
 			reg.WriteString("Destination Folder", txtDestFolder.Text);
+			reg.WriteBool("Ignore Visual Studio", chkVisualStudio.Checked);
+			reg.WriteBool("Ignore Node JS", chkNodeJS.Checked);
+			reg.WriteBool("Ignore Git", chkGit.Checked);
 			reg.Close();
 
 			TaskForm form = new TaskForm();
@@ -95,29 +100,7 @@ namespace LiteCopy
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void btnIgnores_Click(object sender, EventArgs e)
-		{
-			IgnoreForm form = new IgnoreForm();
-			form.IgnoredText = m_im.Text;
-			if (form.ShowDialog(this) != DialogResult.OK)
-			{
-				return;
-			}
-			
-			m_im.Text = form.IgnoredText;
-			m_im.Parse();
-
-			try
-			{
-				m_im.Save();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message, "LiteCopy", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-			}
-		}
+		}		
 
 		private void listView1_DragEnter(object sender, DragEventArgs e)
 		{

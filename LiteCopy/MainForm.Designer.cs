@@ -35,23 +35,27 @@
 			this.txtDestFolder = new System.Windows.Forms.TextBox();
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteSelectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-			this.btnIgnores = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.btnBrowseDest = new System.Windows.Forms.Button();
-			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.chkVisualStudio = new System.Windows.Forms.CheckBox();
+			this.chkNodeJS = new System.Windows.Forms.CheckBox();
+			this.chkGit = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 9);
+			this.label2.Location = new System.Drawing.Point(12, 10);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(95, 12);
+			this.label2.Size = new System.Drawing.Size(78, 13);
 			this.label2.TabIndex = 0;
 			this.label2.Text = "Source folders:";
 			// 
@@ -59,9 +63,9 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 267);
+			this.label3.Location = new System.Drawing.Point(10, 224);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(119, 12);
+			this.label3.Size = new System.Drawing.Size(92, 13);
 			this.label3.TabIndex = 2;
 			this.label3.Text = "Destination folder:";
 			// 
@@ -69,9 +73,9 @@
 			// 
 			this.txtDestFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtDestFolder.Location = new System.Drawing.Point(14, 282);
+			this.txtDestFolder.Location = new System.Drawing.Point(12, 241);
 			this.txtDestFolder.Name = "txtDestFolder";
-			this.txtDestFolder.Size = new System.Drawing.Size(469, 21);
+			this.txtDestFolder.Size = new System.Drawing.Size(469, 20);
 			this.txtDestFolder.TabIndex = 3;
 			// 
 			// listView1
@@ -83,9 +87,9 @@
 			this.listView1.ContextMenuStrip = this.contextMenuStrip1;
 			this.listView1.FullRowSelect = true;
 			this.listView1.HideSelection = false;
-			this.listView1.Location = new System.Drawing.Point(12, 24);
+			this.listView1.Location = new System.Drawing.Point(12, 26);
 			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(503, 221);
+			this.listView1.Size = new System.Drawing.Size(503, 182);
 			this.listView1.SmallImageList = this.imageList1;
 			this.listView1.TabIndex = 1;
 			this.listView1.UseCompatibleStateImageBehavior = false;
@@ -100,19 +104,26 @@
             this.deleteSelectedItemsToolStripMenuItem,
             this.clearAllToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(119, 70);
+			// 
+			// addToolStripMenuItem
+			// 
+			this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+			this.addToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+			this.addToolStripMenuItem.Text = "Add...";
+			this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
 			// 
 			// deleteSelectedItemsToolStripMenuItem
 			// 
 			this.deleteSelectedItemsToolStripMenuItem.Name = "deleteSelectedItemsToolStripMenuItem";
-			this.deleteSelectedItemsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.deleteSelectedItemsToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.deleteSelectedItemsToolStripMenuItem.Text = "Delete";
 			this.deleteSelectedItemsToolStripMenuItem.Click += new System.EventHandler(this.deleteSelectedItemsToolStripMenuItem_Click);
 			// 
 			// clearAllToolStripMenuItem
 			// 
 			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
-			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.clearAllToolStripMenuItem_Click);
 			// 
@@ -122,41 +133,28 @@
 			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
 			this.imageList1.Images.SetKeyName(0, "Folder_Small.png");
 			// 
-			// btnIgnores
-			// 
-			this.btnIgnores.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnIgnores.Image = global::LiteCopy.Properties.Resources.Cog;
-			this.btnIgnores.Location = new System.Drawing.Point(366, 321);
-			this.btnIgnores.Name = "btnIgnores";
-			this.btnIgnores.Size = new System.Drawing.Size(91, 26);
-			this.btnIgnores.TabIndex = 7;
-			this.btnIgnores.Text = " Ignores";
-			this.btnIgnores.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.btnIgnores.UseVisualStyleBackColor = true;
-			this.btnIgnores.Click += new System.EventHandler(this.btnIgnores_Click);
-			// 
 			// btnCancel
 			// 
-			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.btnCancel.Image = global::LiteCopy.Properties.Resources.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(148, 321);
+			this.btnCancel.Location = new System.Drawing.Point(304, 358);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(91, 26);
-			this.btnCancel.TabIndex = 6;
-			this.btnCancel.Text = " Exit";
+			this.btnCancel.Size = new System.Drawing.Size(91, 28);
+			this.btnCancel.TabIndex = 7;
+			this.btnCancel.Text = "  Exit";
 			this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// btnOK
 			// 
-			this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.btnOK.Image = global::LiteCopy.Properties.Resources.OK;
-			this.btnOK.Location = new System.Drawing.Point(40, 321);
+			this.btnOK.Location = new System.Drawing.Point(136, 358);
 			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(91, 26);
-			this.btnOK.TabIndex = 5;
-			this.btnOK.Text = " Copy";
+			this.btnOK.Size = new System.Drawing.Size(91, 28);
+			this.btnOK.TabIndex = 6;
+			this.btnOK.Text = "  Copy";
 			this.btnOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnOK.UseVisualStyleBackColor = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -165,27 +163,64 @@
 			// 
 			this.btnBrowseDest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnBrowseDest.Image = global::LiteCopy.Properties.Resources.Browse;
-			this.btnBrowseDest.Location = new System.Drawing.Point(489, 280);
+			this.btnBrowseDest.Location = new System.Drawing.Point(487, 238);
 			this.btnBrowseDest.Name = "btnBrowseDest";
-			this.btnBrowseDest.Size = new System.Drawing.Size(26, 24);
+			this.btnBrowseDest.Size = new System.Drawing.Size(26, 26);
 			this.btnBrowseDest.TabIndex = 4;
 			this.btnBrowseDest.UseVisualStyleBackColor = true;
 			this.btnBrowseDest.Click += new System.EventHandler(this.btnBrowseDest_Click);
 			// 
-			// addToolStripMenuItem
+			// groupBox1
 			// 
-			this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-			this.addToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.addToolStripMenuItem.Text = "Add...";
-			this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.chkGit);
+			this.groupBox1.Controls.Add(this.chkNodeJS);
+			this.groupBox1.Controls.Add(this.chkVisualStudio);
+			this.groupBox1.Location = new System.Drawing.Point(12, 276);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(501, 61);
+			this.groupBox1.TabIndex = 5;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Ignores";
+			// 
+			// chkVisualStudio
+			// 
+			this.chkVisualStudio.AutoSize = true;
+			this.chkVisualStudio.Location = new System.Drawing.Point(19, 26);
+			this.chkVisualStudio.Name = "chkVisualStudio";
+			this.chkVisualStudio.Size = new System.Drawing.Size(87, 17);
+			this.chkVisualStudio.TabIndex = 0;
+			this.chkVisualStudio.Text = "Visual Studio";
+			this.chkVisualStudio.UseVisualStyleBackColor = true;
+			// 
+			// chkNodeJS
+			// 
+			this.chkNodeJS.AutoSize = true;
+			this.chkNodeJS.Location = new System.Drawing.Point(160, 26);
+			this.chkNodeJS.Name = "chkNodeJS";
+			this.chkNodeJS.Size = new System.Drawing.Size(67, 17);
+			this.chkNodeJS.TabIndex = 1;
+			this.chkNodeJS.Text = "Node JS";
+			this.chkNodeJS.UseVisualStyleBackColor = true;
+			// 
+			// chkGit
+			// 
+			this.chkGit.AutoSize = true;
+			this.chkGit.Location = new System.Drawing.Point(292, 26);
+			this.chkGit.Name = "chkGit";
+			this.chkGit.Size = new System.Drawing.Size(39, 17);
+			this.chkGit.TabIndex = 2;
+			this.chkGit.Text = "Git";
+			this.chkGit.UseVisualStyleBackColor = true;
 			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(531, 368);
+			this.ClientSize = new System.Drawing.Size(531, 403);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.listView1);
-			this.Controls.Add(this.btnIgnores);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOK);
 			this.Controls.Add(this.btnBrowseDest);
@@ -199,6 +234,8 @@
 			this.Text = "LiteCopy";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -212,12 +249,15 @@
 		private System.Windows.Forms.Button btnOK;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.ListView listView1;
-		private System.Windows.Forms.Button btnIgnores;
 		private System.Windows.Forms.ImageList imageList1;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteSelectedItemsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.CheckBox chkGit;
+		private System.Windows.Forms.CheckBox chkNodeJS;
+		private System.Windows.Forms.CheckBox chkVisualStudio;
 	}
 }
 

@@ -43,7 +43,7 @@ namespace LiteCopy
 		{
 			foreach (FileInfo file in source.GetFiles())
 			{
-				if (m_im.IsExtIgnored(file.Extension))
+				if (m_im.IsIgored(file))
 				{
 					continue;
 				}
@@ -54,7 +54,7 @@ namespace LiteCopy
 
 			foreach (DirectoryInfo sub in source.GetDirectories())
 			{
-				if (m_im.IsFolderIgnored(sub.Name))
+				if (m_im.IsIgored(sub))
 				{
 					continue;
 				}
